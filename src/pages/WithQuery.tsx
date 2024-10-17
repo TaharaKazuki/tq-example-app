@@ -72,7 +72,7 @@ const WithQuery = () => {
         >
           Prev
         </button>
-        <p className="text-gray-100">Current page: {page}</p>
+        <p className="text-gray-600">Current page: {page}</p>
         <button
           className="px-3 py-1 bg-blue-500 rounded-md text-white font-bold"
           onClick={() => setPage((prev) => prev + 1)}

@@ -5,6 +5,7 @@ import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import WithQuery from './pages/WithQuery.tsx';
 import WithoutQuery from './pages/WithoutQuery.tsx';
+import WithInfiniteQuery from './pages/WithInfiniteQuery.tsx';
 import Post from './pages/Post.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
   {
     path: '/withquery/:id',
     element: <Post />,
+  },
+  {
+    path: '/withinfinitequery',
+    element: <WithInfiniteQuery />,
   },
 ]);
 
