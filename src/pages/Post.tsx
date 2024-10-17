@@ -2,15 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { Post as PostType } from '../types';
 
-const getComments = async (id: string | undefined) => {
-  const res = await fetch(
-    `https://jsonplaceholder.typicode.com/posts/${id}/comments`
-  );
-  if (!res.ok) {
-    throw new Error('There was an error!');
-  }
-  return res.json();
-};
+// const getComments = async (id: string | undefined) => {
+//   const res = await fetch(
+//     `https://jsonplaceholder.typicode.com/posts/${id}/comments`
+//   );
+//   if (!res.ok) {
+//     throw new Error('There was an error!');
+//   }
+//   return res.json();
+// };
 
 const Post = () => {
   const { id } = useParams();
@@ -27,15 +27,15 @@ const Post = () => {
     staleTime: 10000,
   });
 
-  const {
-    isPending: _isCommentsPending,
-    error: _commentsError,
-    data: _comments,
-  } = useQuery({
-    queryKey: ['comments'],
-    queryFn: () => getComments(id),
-    enabled: !isPending,
-  });
+  // const {
+  //   isPending: _isCommentsPending,
+  //   error: _commentsError,
+  //   data: _comments,
+  // } = useQuery({
+  //   queryKey: ['comments'],
+  //   queryFn: () => getComments(id),
+  //   enabled: !isPending,
+  // });
 
   if (isPending) {
     return (

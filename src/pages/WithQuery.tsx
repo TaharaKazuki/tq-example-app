@@ -1,18 +1,12 @@
-import {
-  useQueries,
-  UseQueryResult,
-  // useQuery
-} from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { Post, User } from '../types';
+import { Post } from '../types';
+import { useState } from 'react';
 
-const getPosts = async () => {
-  const res = await fetch('https://jsonplaceholder.typicode.com/posts');
-  return res.json();
-};
-
-const getUsers = async () => {
-  const res = await fetch('https://jsonplaceholder.typicode.com/users');
+const getPosts = async (page: number) => {
+  const res = await fetch(
+    `https://jsonplaceholder.typicode.com/posts?_page=${page}`
+  );
   if (!res.ok) {
     throw new Error('There was an error!');
   }
@@ -20,13 +14,13 @@ const getUsers = async () => {
 };
 
 const WithQuery = () => {
-  const [{ isPending, error, data }] = useQueries<
-    [UseQueryResult<Post[]>, UseQueryResult<User[]>]
-  >({
-    queries: [
-      { queryKey: ['post'], queryFn: getPosts },
-      { queryKey: ['users'], queryFn: getUsers, retryDelay: 2000 },
-    ],
+  const [page, setPage] = useState<number>(1);
+
+  const { isPending, error, data, isFetching } = useQuery<Post[]>({
+    queryKey: ['posts', page],
+    queryFn: () => getPosts(page),
+    staleTime: 10000,
+    placeholderData: keepPreviousData,
   });
 
   if (isPending) {
@@ -56,19 +50,36 @@ const WithQuery = () => {
       <h1 className="text-3xl text-center my-8 font-bold text-gray-400">
         Posts Data
       </h1>
-      {data &&
-        data.map((post) => (
-          <Link
-            to={`${post.id}`}
-            key={post.id}
-            className="p-4 rounded-lg block border border-gray-200 my-6 cursor-pointer hover:bg-gray-900"
-          >
-            <h2 className="font-bold text-lg mb-2 text-gray-400">
-              {post.title}
-            </h2>
-            <p className="text-gray-400">{post.body}</p>
-          </Link>
-        ))}
+      <div className={`${isFetching ? 'bg-gray-300 opacity-50' : ''}`}>
+        {data &&
+          data.map((post) => (
+            <Link
+              to={`${post.id}`}
+              key={post.id}
+              className="p-4 rounded-lg block border border-gray-200 my-6 cursor-pointer hover:bg-gray-900"
+            >
+              <h2 className="font-bold text-lg mb-2 text-gray-400">
+                {post.title}
+              </h2>
+              <p className="text-gray-400">{post.body}</p>
+            </Link>
+          ))}
+      </div>
+      <div className="flex items-center justify-center gap-2">
+        <button
+          className="px-3 py-1 bg-blue-500 rounded-md text-white font-bold"
+          onClick={() => setPage((prev) => (prev > 1 ? prev - 1 : 1))}
+        >
+          Prev
+        </button>
+        <p className="text-gray-100">Current page: {page}</p>
+        <button
+          className="px-3 py-1 bg-blue-500 rounded-md text-white font-bold"
+          onClick={() => setPage((prev) => prev + 1)}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
